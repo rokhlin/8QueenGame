@@ -11,7 +11,9 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:src="@drawable/white_square"
         android:scaleType="fitXY"
         />
+    <!--android:padding="@dimen/cell_padding"-->
 </LinearLayout>

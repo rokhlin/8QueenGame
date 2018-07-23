@@ -41,6 +41,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View  container = convertView;
+        int cellValue = GameUtils.getValue(position,boardData);
 
         if (container == null) {
             container = mInflater.inflate(R.layout.listview_item, null);
@@ -58,8 +59,14 @@ public class CustomListAdapter extends BaseAdapter {
             container.setBackground(ContextCompat.getDrawable(context,R.drawable.white_square));
 
         // Put Figure on the board
-        if (GameUtils.getValue(position,boardData) > 9)
-            imageview.setImageResource(R.drawable.queen_img);
+        if ( cellValue > 9){
+            imageview.setPadding(4,4,4,4);
+            imageview.setImageResource(R.drawable.queen);
+        }
+        else if(MainActivity.needHelp){//enable help
+            if(cellValue == 0) imageview.setImageResource(R.drawable.transparent);
+            else imageview.setImageResource(R.drawable.transparent_help);
+        }
         else
             imageview.setImageResource(R.drawable.transparent);
 

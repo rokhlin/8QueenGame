@@ -11,7 +11,7 @@ public class Game {
     private static final int QUEEN_STEP = 10;
     private static final int EMPTY = 0;
 
-    private static HashMap<Integer, HashSet<Integer>> queens = new HashMap<>();
+    private HashMap<Integer, HashSet<Integer>> queens = new HashMap<>();
 
     public  void deleteQueen(int position, int[][] field) {
         int row = GameUtils.getRow(position);

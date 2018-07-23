@@ -12,6 +12,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        getSupportActionBar().hide();
 
         Button startGame = findViewById(R.id.btn_start);
         startGame.setOnClickListener(new View.OnClickListener() {

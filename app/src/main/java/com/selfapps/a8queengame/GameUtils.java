@@ -32,4 +32,10 @@ public class GameUtils {
         Log.d("TAG", "for "+position+" getRow= "+(position / 8));
         return position / 8;
     }
+
+    public static String getCellName(int position){
+        char[] columnNames = {'a','b','c','d','e','f','g','h'};
+        return "" + columnNames[getColumn(position)] + getRow(position);
+    }
+
 }

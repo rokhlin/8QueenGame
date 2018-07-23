@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">8QueenGame</string>
+    <string name="return1">Попробуй еще</string>
+    <string name="queens_game">Пазл, 8 королев</string>
+    <string name="start_game">Начать игру</string>
+    <string name="game_started">Игра началась</string>
+    <string name="queens_to_place">королев осталось разместить</string>
+    <string name="game_inished">Игра уже закончена!!</string>
+    <string name="you_win">Ва победили!</string>
+    <string name="game_over">Поражение! Игра окончена.</string>
+    <string name="queen_on_cell">Королева в ячейку: </string>
+    <string name="queen_removed">Королева убрана</string>
+    <string name="unable_turn">Невозможно поставить фигуру на </string>
+    <string name="unable_turn2">Вы не можете поставить фигуру на</string>
+    <string name="help">Помощь</string>
+    <string name="hide_help">Скрыть помощь</string>
+    <string name="find_for_8_queens_secured_place">Найдите безопасное место для 8 королев</string>
+</resources>

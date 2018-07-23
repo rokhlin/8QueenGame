@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">8QueenGame</string>
+    <string name="return1">Try Again</string>
+    <string name="queens_game">8 Queens game</string>
+    <string name="start_game">Start Game</string>
+    <string name="game_started">Game started</string>
+    <string name="queens_to_place">queens to place</string>
+    <string name="game_inished">Game already finished!!</string>
+    <string name="you_win">You Win!</string>
+    <string name="game_over">Game over!</string>
+    <string name="queen_on_cell">Queen on cell:</string>
+    <string name="queen_removed">Queen Removed</string>
+    <string name="unable_turn">Unable set up on</string>
+    <string name="unable_turn2">You can\'t put Queen on</string>
+    <string name="help">Help</string>
+    <string name="hide_help">Hide help</string>
+    <string name="find_for_8_queens_secured_place">Find for 8 queens secured place</string>
 </resources>
