@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "749799846683",
+    "firebase_url": "https://queengame-1c283.firebaseio.com",
+    "project_id": "queengame-1c283",
+    "storage_bucket": "queengame-1c283.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749799846683:android:1dbde8bc47f9478c",
+        "android_client_info": {
+          "package_name": "com.selfapps.a8queengame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749799846683-3k0fq1l4mva35k83qliv7vo86habrar7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.selfapps.a8queengame",
+            "certificate_hash": "a4c9a3ecda11b29c8cc937c130cf546ab709c11f"
+          }
+        },
+        {
+          "client_id": "749799846683-3gomd6tnsoh6kqre0iab8285okujk2dj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCUEDtjY82Tnm28_y8hwQ_h_wJQIX1Omg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749799846683-3gomd6tnsoh6kqre0iab8285okujk2dj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
