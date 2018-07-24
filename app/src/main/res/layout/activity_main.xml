@@ -18,9 +18,9 @@
 
     <GridView
         android:id="@+id/boardLayout"
-        android:background="@drawable/transparent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/transparent"
         android:gravity="center"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth" />
@@ -43,12 +43,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/base_margin"
+            android:layout_marginBottom="16dp"
+            android:paddingBottom="28dp"
+            android:baselineAligned="false"
+            android:layout_gravity="fill"
             android:gravity="start" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Chronometer
+                android:id="@+id/chronometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|end"
+                android:layout_marginEnd="@dimen/base_margin"
+                android:gravity="right|end" />
+        </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_rerurn"
+        android:id="@+id/ll_return"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/base_margin"

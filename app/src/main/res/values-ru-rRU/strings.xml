@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">8QueenGame</string>
+    <string name="app_name">8 Королев</string>
     <string name="return1">Попробуй еще</string>
     <string name="queens_game">Пазл, 8 королев</string>
     <string name="start_game">Начать игру</string>
     <string name="game_started">Игра началась</string>
-    <string name="queens_to_place">королев осталось разместить</string>
+    <string name="queens_to_place">осталось разместить</string>
     <string name="game_inished">Игра уже закончена!!</string>
     <string name="you_win">Ва победили!</string>
     <string name="game_over">Поражение! Игра окончена.</string>

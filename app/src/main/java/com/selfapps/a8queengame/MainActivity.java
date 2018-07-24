@@ -1,6 +1,7 @@
 package com.selfapps.a8queengame;
 
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,10 +23,11 @@ public class MainActivity extends AppCompatActivity {
     private CustomListAdapter adapter;
     private TextView queensCount,gameLog;
     private LinearLayout stat, returnLayout;
-    private Button btnReturn;
     private Game game;
+    private Chronometer chronometer;
+    private boolean isStarted = false;
+    private long elapsedMillis;
 
-    private static final int margin = 0;
     int [][] boarderField;
 
     @Override
@@ -45,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
         gridview.setColumnWidth(edge/NUM_OF_SQUARES);
 
         stat = findViewById(R.id.ll_stat);
-        returnLayout = findViewById(R.id.ll_rerurn);
+        returnLayout = findViewById(R.id.ll_return);
 
-        btnReturn = findViewById(R.id.btn_back);
+        Button btnReturn = findViewById(R.id.btn_back);
         btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +70,16 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 turn(position);
+            }
+        });
+
+        chronometer = findViewById(R.id.chronometer);
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                elapsedMillis = SystemClock.elapsedRealtime()
+                        - chronometer.getBase();
+
             }
         });
 
@@ -96,6 +109,15 @@ public class MainActivity extends AppCompatActivity {
             return super.onOptionsItemSelected(item);
     }
 
+    private void startChronometer(){
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+    }
+
+    private void stopChronometer(){
+        chronometer.stop();
+    }
+
     private void updateLog(String s) {
         gameLog.setText(gameLog.getText()+"\n"+s);
     }
@@ -109,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void turn(int position) {
+        if(!isStarted){
+            startChronometer();
+            isStarted = true;
+        }
 
         if(game.checkWin()){
             Toast.makeText(MainActivity.this, R.string.game_inished,
@@ -125,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             if(addQueen(position)){
+                stopChronometer();
+
                 updateLog(getString(R.string.you_win));
                 showBackButton();
             }
@@ -134,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
         updateQueenCount();
 
         if(checkGameOver()){
+            stopChronometer();
+
             updateLog( getString(R.string.game_over));
             showBackButton();
         }
@@ -182,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getEdge(int height, int width) {
-        int res = height > width? width - margin : height - margin;
+        int res = height > width? width : height ;
         res = res - (res % NUM_OF_SQUARES);
         return res;
     }

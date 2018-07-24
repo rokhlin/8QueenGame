@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">8QueenGame</string>
+    <string name="app_name">Eight Queens</string>
     <string name="return1">Try Again</string>
     <string name="queens_game">8 Queens game</string>
     <string name="start_game">Start Game</string>
