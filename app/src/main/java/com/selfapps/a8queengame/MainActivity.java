@@ -16,39 +16,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
-    private static final int NUM_OF_SQUARES = 8;
-    private static final int NUM_OF_QUEENS = 8;
-    public static boolean needHelp = false;
+public class MainActivity extends AppCompatActivity implements GameContract.GameView{
     private CustomListAdapter adapter;
     private TextView queensCount,gameLog;
     private LinearLayout stat, returnLayout;
     private Game game;
     private Chronometer chronometer;
-    private boolean isStarted = false;
-    private long elapsedMillis;
-
-    int [][] boarderField;
+    private GamePresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        boarderField = initEmptyField();
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int height = metrics.heightPixels;
-        int width = metrics.widthPixels;
-        int edge = getEdge(height,width);
-
-        game = new Game();
-        GridView gridview = findViewById(R.id.boardLayout);
-        gridview.setColumnWidth(edge/NUM_OF_SQUARES);
-
-        stat = findViewById(R.id.ll_stat);
-        returnLayout = findViewById(R.id.ll_return);
 
         Button btnReturn = findViewById(R.id.btn_back);
         btnReturn.setOnClickListener(new View.OnClickListener() {
@@ -62,29 +41,21 @@ public class MainActivity extends AppCompatActivity {
 
         queensCount = findViewById(R.id.tv_free_queens);
         gameLog = findViewById(R.id.tv_log);
+        stat = findViewById(R.id.ll_stat);
+        returnLayout = findViewById(R.id.ll_return);
 
-        adapter = new CustomListAdapter(this, boarderField, edge);
-        gridview.setAdapter(adapter);
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                turn(position);
-            }
-        });
+        presenter = new GamePresenter();
+        presenter.attachView(this);
+        presenter.viewIsReady();
 
         chronometer = findViewById(R.id.chronometer);
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                elapsedMillis = SystemClock.elapsedRealtime()
-                        - chronometer.getBase();
-
+                presenter.setElapsedTime(SystemClock.elapsedRealtime()
+                        - chronometer.getBase());
             }
         });
-
-        updateQueenCount();
-        updateLog(getString(R.string.game_started));
     }
 
 
@@ -97,125 +68,91 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_help){
-            if(needHelp)
-                item.setTitle(getString(R.string.help));
-            else
-                item.setTitle(getString(R.string.hide_help));
-            needHelp = !needHelp;
-            adapter.notifyDataSetChanged(boarderField);
+            presenter.menuSelected(item);
             return true;
-        }
-        else
+        } else
             return super.onOptionsItemSelected(item);
     }
 
-    private void startChronometer(){
+
+    @Override
+    public void notifyAdapter(int[][] newData) {
+        adapter.notifyDataSetChanged(newData);
+    }
+
+    @Override
+    public void startTimer() {
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
     }
 
-    private void stopChronometer(){
+    @Override
+    public void stopTimer() {
         chronometer.stop();
     }
 
-    private void updateLog(String s) {
+    @Override
+    public CustomListAdapter initAdapter(GridView gridView, int[][] boarderField, int edge) {
+        adapter = new CustomListAdapter(this, boarderField, edge);
+        gridView.setAdapter(adapter);
+        return adapter;
+    }
+
+    @Override
+    public void updateLog(String s) {
         gameLog.setText(gameLog.getText()+"\n"+s);
     }
 
-    public void updateQueenCount(){
-        queensCount.setText(getQueenCount() +" "+ getString(R.string.queens_to_place));
+    @Override
+    public void updateLog(int textId) {
+        gameLog.setText(gameLog.getText()+"\n" + getString(textId));
     }
 
-    private int getQueenCount() {
-        return NUM_OF_QUEENS - game.getQueenCount();
+    @Override
+    public void updateQueenCount(int count){
+        queensCount.setText( count +" "+ getString(R.string.queens_to_place));
     }
 
-    private void turn(int position) {
-        if(!isStarted){
-            startChronometer();
-            isStarted = true;
-        }
-
-        if(game.checkWin()){
-            Toast.makeText(MainActivity.this, R.string.game_inished,
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        int value = GameUtils.getValue(position, boarderField);
-
-        if(value == 1) {
-            sayBlocked(position);
-        }
-        else if(value != 0){
-            removeQueen(position);
-        }
-        else {
-            if(addQueen(position)){
-                stopChronometer();
-
-                updateLog(getString(R.string.you_win));
-                showBackButton();
-            }
-
-        }
-        adapter.notifyDataSetChanged(boarderField);
-        updateQueenCount();
-
-        if(checkGameOver()){
-            stopChronometer();
-
-            updateLog( getString(R.string.game_over));
-            showBackButton();
-        }
-    }
-
-    private void showBackButton() {
+    public void showBackButton() {
         stat.setVisibility(View.GONE);
         returnLayout.setVisibility(View.VISIBLE);
     }
 
-    private boolean checkGameOver() {
-        int countFree = 0;
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if(boarderField[i][j] == 0) countFree++;
+    @Override
+    public GridView initBoardContainer(int columnWidth) {
+        GridView gridview = findViewById(R.id.boardLayout);
+        gridview.setColumnWidth(columnWidth);
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                presenter.turn(position);
             }
-        }
-        return countFree == 0;
+        });
+        return gridview;
     }
 
-    private boolean addQueen(int position) {
-        updateLog( getString(R.string.queen_on_cell) +" "+ GameUtils.getCellName(position));
-        return game.addQueen(position, boarderField);
+    @Override
+    public DisplayMetrics getDisplayMetrics() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        return metrics;
     }
 
-    private void removeQueen(int position) {
-        updateLog(getString(R.string.queen_removed));
-        game.deleteQueen(position, boarderField);
+    @Override
+    public String getStringFromId(int id) {
+        return getString(id);
     }
 
-    private void sayBlocked(int position) {
-        updateLog( getString(R.string.unable_turn) +" "+ GameUtils.getCellName(position));
-        Toast.makeText(MainActivity.this, getString(R.string.unable_turn2) +" "+ GameUtils.getCellName(position),
+    @Override
+    public void showToast(int textId) {
+        Toast.makeText(MainActivity.this, textId,
                 Toast.LENGTH_SHORT).show();
     }
 
-    private int[][] initEmptyField() {
-        int [][] field = new int[8][8];
-
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                field[i][j] = 0;
-            }
-        }
-        return field;
+    @Override
+    public void showToast(String text) {
+        Toast.makeText(MainActivity.this, text,
+                Toast.LENGTH_SHORT).show();
     }
-
-    private int getEdge(int height, int width) {
-        int res = height > width? width : height ;
-        res = res - (res % NUM_OF_SQUARES);
-        return res;
-    }
-
-
 }

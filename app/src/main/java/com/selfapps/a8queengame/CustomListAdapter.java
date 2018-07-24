@@ -63,7 +63,7 @@ public class CustomListAdapter extends BaseAdapter {
             imageview.setPadding(4,4,4,4);
             imageview.setImageResource(R.drawable.queen);
         }
-        else if(MainActivity.needHelp){//enable help
+        else if(GamePresenter.needHelp){//enable help
             if(cellValue == 0) imageview.setImageResource(R.drawable.transparent);
             else imageview.setImageResource(R.drawable.transparent_help);
         }

@@ -1,48 +1,95 @@
 package com.selfapps.a8queengame;
 
-import android.util.Log;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class Game {
+public class Game implements GameContract.EightQueensGame {
     private static final int BLOCKED = 1;
     private static final int QUEEN_STEP = 10;
     private static final int EMPTY = 0;
 
     private HashMap<Integer, HashSet<Integer>> queens = new HashMap<>();
+    private int[][] boarderField;
 
-    public  void deleteQueen(int position, int[][] field) {
+    public Game() {
+        initEmptyField();
+    }
+    
+
+    @Override
+    public int[][] getData() {
+        return boarderField;
+    }
+
+    @Override
+    public boolean addFigure(FigureType figureType, int position) {
         int row = GameUtils.getRow(position);
         int column = GameUtils.getColumn(position);
-        int queenId = field[row][column];
+        int queenId = QUEEN_STEP * (queens.size()+1);
+
+        markField(position,boarderField,queenId);
+        markRow(column,queenId,boarderField,row);
+        markColumn(row,queenId,boarderField,column);
+        markDownLeft(queenId,boarderField,column,row);
+        markDownRight(queenId,boarderField,column,row);
+        markUpLeft(queenId,boarderField,column,row);
+        markUpRight(queenId,boarderField,column,row);
+        return checkWin();
+    }
+
+    @Override
+    public void removeFigure(int position) {
+        int row = GameUtils.getRow(position);
+        int column = GameUtils.getColumn(position);
+        int queenId = boarderField[row][column];
         HashSet<Integer> qBlock = queens.get(queenId);
 
         for (Integer pos : queens.get(queenId)) {
-            markField(pos,field,EMPTY);
+            markField(pos,boarderField,EMPTY);
         }
 
         queens.remove(queenId);
+    }
+
+    @Override
+    public int[][] initEmptyField() {
+        boarderField = new int[8][8];
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                boarderField[i][j] = 0;
+            }
+        }
+        return boarderField;
+    }
+
+    @Override
+    public boolean checkGameOver() {
+        int countFree = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if(boarderField[i][j] == 0) countFree++;
+            }
+        }
+        return countFree == 0;
     }
 
     public  boolean checkWin(){
         return queens.size() == 8;
     }
 
-    public  boolean addQueen(int position, int[][] field) {
-        int row = GameUtils.getRow(position);
-        int column = GameUtils.getColumn(position);
-        int queenId = QUEEN_STEP * (queens.size()+1);
+    @Override
+    public void startGame() {
+    }
 
-        markField(position,field,queenId);
-        markRow(column,queenId,field,row);
-        markColumn(row,queenId,field,column);
-        markDownLeft(queenId,field,column,row);
-        markDownRight(queenId,field,column,row);
-        markUpLeft(queenId,field,column,row);
-        markUpRight(queenId,field,column,row);
-        return checkWin();
+    @Override
+    public void stopGame() {
+
+    }
+
+    @Override
+    public void restartGame() {
+        initEmptyField();
     }
 
     public void markField(int position, int[][] field, int toValue) {
