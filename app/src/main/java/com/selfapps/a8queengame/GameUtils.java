@@ -33,6 +33,10 @@ public class GameUtils {
         return position / 8;
     }
 
+    public static int getPosition(int row, int column){
+        return row * 8 + column;
+    }
+
     public static String getCellName(int position){
         char[] columnNames = {'a','b','c','d','e','f','g','h'};
         return "" + columnNames[getColumn(position)] + getRow(position);

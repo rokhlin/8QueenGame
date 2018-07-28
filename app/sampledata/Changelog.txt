@@ -1,0 +1,8 @@
+0.8
+first version
+
+0.9
+add Crashlytics
+implement MVP
+convert model to OOP type
+

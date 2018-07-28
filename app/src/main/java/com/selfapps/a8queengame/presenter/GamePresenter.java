@@ -1,8 +1,19 @@
-package com.selfapps.a8queengame;
+package com.selfapps.a8queengame.presenter;
 
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.view.MenuItem;
 import android.widget.GridView;
+
+import com.selfapps.a8queengame.Game;
+import com.selfapps.a8queengame.GameUtils;
+import com.selfapps.a8queengame.R;
+import com.selfapps.a8queengame.model.Cell;
+import com.selfapps.a8queengame.model.CellStatus;
+import com.selfapps.a8queengame.model.Color;
+import com.selfapps.a8queengame.model.Figure;
+import com.selfapps.a8queengame.model.FigureType;
+import com.selfapps.a8queengame.presenter.GameContract;
 
 public class GamePresenter implements GameContract.Presenter<GameContract.GameView> {
     private static final int NUM_OF_SQUARES = 8;
@@ -35,12 +46,13 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
 
         if(game.checkWin()) view.showToast(R.string.game_inished);
 
-        int value = GameUtils.getValue(position, getData());//TODO move it from here
+        //int value = GameUtils.getValue(position, getData());//TODO move it from here
+        Cell cell = game.getData().get(position);//TODO move it from here
 
-        if(value == 1) {
+        if(cell.getCellStatus().equals(CellStatus.BLOCKED_BY_BLACKS)) {
             sayBlocked(position);
         }
-        else if(value != 0){
+        else if(cell.getCellStatus().equals(CellStatus.OCCUPIED)){
             game.removeFigure(position);
         }
         else {
@@ -64,7 +76,7 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
     @Override
     public boolean addFigure(FigureType type, int position) {
         view.updateLog( view.getStringFromId(R.string.queen_on_cell) +" "+ GameUtils.getCellName(position));
-        return game.addFigure(type,position);
+        return game.addFigure(new Figure(type,Color.BLACK),position);
     }
 
     @Override
@@ -80,7 +92,7 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
     }
 
     @Override
-    public int[][] getData() {
+    public SparseArray<Cell> getData() {
         return game.getData();
     }
 

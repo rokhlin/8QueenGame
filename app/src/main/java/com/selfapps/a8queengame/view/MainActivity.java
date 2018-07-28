@@ -1,10 +1,11 @@
-package com.selfapps.a8queengame;
+package com.selfapps.a8queengame.view;
 
 import android.content.Intent;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements GameContract.GameView{
+import com.selfapps.a8queengame.CustomListAdapter;
+import com.selfapps.a8queengame.Game;
+import com.selfapps.a8queengame.model.Cell;
+import com.selfapps.a8queengame.model.Figure;
+import com.selfapps.a8queengame.presenter.GameContract;
+import com.selfapps.a8queengame.presenter.GamePresenter;
+import com.selfapps.a8queengame.R;
+
+public class MainActivity extends AppCompatActivity implements GameContract.GameView {
     private CustomListAdapter adapter;
     private TextView queensCount,gameLog;
     private LinearLayout stat, returnLayout;
@@ -76,8 +85,9 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
 
 
     @Override
-    public void notifyAdapter(int[][] newData) {
+    public void notifyAdapter(SparseArray<Cell> newData) {
         adapter.notifyDataSetChanged(newData);
+
     }
 
     @Override
@@ -91,9 +101,10 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
         chronometer.stop();
     }
 
+
     @Override
-    public CustomListAdapter initAdapter(GridView gridView, int[][] boarderField, int edge) {
-        adapter = new CustomListAdapter(this, boarderField, edge);
+    public CustomListAdapter initAdapter(GridView gridView, SparseArray<Cell> cells, int edge) {
+        adapter = new CustomListAdapter(this, cells, edge);
         gridView.setAdapter(adapter);
         return adapter;
     }

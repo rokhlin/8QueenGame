@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/chess_logo"
-    tools:context=".StartActivity">
+    tools:context=".view.StartActivity">
 
     <Button
         android:id="@+id/btn_start"

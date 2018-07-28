@@ -1,15 +1,23 @@
 package com.selfapps.a8queengame;
 
-import java.util.HashMap;
+import android.util.SparseArray;
+
+import com.selfapps.a8queengame.model.Action;
+import com.selfapps.a8queengame.model.Cell;
+import com.selfapps.a8queengame.model.CellStatus;
+import com.selfapps.a8queengame.model.ChessBoard;
+import com.selfapps.a8queengame.model.Color;
+import com.selfapps.a8queengame.model.EightQueenWinStrategy;
+import com.selfapps.a8queengame.model.Figure;
+import com.selfapps.a8queengame.model.FigureType;
+import com.selfapps.a8queengame.presenter.GameContract;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Game implements GameContract.EightQueensGame {
-    private static final int BLOCKED = 1;
-    private static final int QUEEN_STEP = 10;
-    private static final int EMPTY = 0;
-
-    private HashMap<Integer, HashSet<Integer>> queens = new HashMap<>();
-    private int[][] boarderField;
+    private ChessBoard board;
+    private EightQueenWinStrategy gameStrategy;
 
     public Game() {
         initEmptyField();
@@ -17,65 +25,64 @@ public class Game implements GameContract.EightQueensGame {
     
 
     @Override
-    public int[][] getData() {
-        return boarderField;
+    public SparseArray<Cell> getData() {
+        return board.getCells();
     }
 
     @Override
-    public boolean addFigure(FigureType figureType, int position) {
-        int row = GameUtils.getRow(position);
-        int column = GameUtils.getColumn(position);
-        int queenId = QUEEN_STEP * (queens.size()+1);
-
-        markField(position,boarderField,queenId);
-        markRow(column,queenId,boarderField,row);
-        markColumn(row,queenId,boarderField,column);
-        markDownLeft(queenId,boarderField,column,row);
-        markDownRight(queenId,boarderField,column,row);
-        markUpLeft(queenId,boarderField,column,row);
-        markUpRight(queenId,boarderField,column,row);
+    public boolean addFigure(Figure figure, int position) {
+        setFigureOnCell(position,new Figure(FigureType.QUEEN, Color.BLACK));
+        boolean isBlocking = true;
+        markRow(Color.BLACK, position, isBlocking);
+        markColumn(Color.BLACK,position, isBlocking);
+        markDownLeft(Color.BLACK,position, isBlocking);
+        markDownRight(Color.BLACK,position, isBlocking);
+        markUpLeft(Color.BLACK,position, isBlocking);
+        markUpRight(Color.BLACK,position, isBlocking);
         return checkWin();
     }
 
     @Override
     public void removeFigure(int position) {
-        int row = GameUtils.getRow(position);
-        int column = GameUtils.getColumn(position);
-        int queenId = boarderField[row][column];
-        HashSet<Integer> qBlock = queens.get(queenId);
+        boolean isBlocking = true;
+        markRow(Color.BLACK, position, isBlocking);
+        markColumn(Color.BLACK,position, isBlocking);
+        markDownLeft(Color.BLACK,position, isBlocking);
+        markDownRight(Color.BLACK,position, isBlocking);
+        markUpLeft(Color.BLACK,position, isBlocking);
+        markUpRight(Color.BLACK,position, isBlocking);
+        removeFigureFromCell(position);
+    }
 
-        for (Integer pos : queens.get(queenId)) {
-            markField(pos,boarderField,EMPTY);
-        }
 
-        queens.remove(queenId);
+    private void removeFigureFromCell(int position) {
+        Cell cell  = board.getCell(position);
+        cell.setFigure(null);
+        board.updateCell(cell,position);
+        gameStrategy.updateData(null, Action.REMOVE);
     }
 
     @Override
-    public int[][] initEmptyField() {
-        boarderField = new int[8][8];
-
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                boarderField[i][j] = 0;
-            }
-        }
-        return boarderField;
+    public SparseArray<Cell> initEmptyField() {
+        board = new ChessBoard(8);
+        gameStrategy = new EightQueenWinStrategy();
+        return board.getCells();
     }
 
     @Override
     public boolean checkGameOver() {
         int countFree = 0;
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if(boarderField[i][j] == 0) countFree++;
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                int curPosition = GameUtils.getPosition(r,c);
+                if(board.getCell(curPosition).getCellStatus() == CellStatus.FREE) countFree++;
             }
         }
         return countFree == 0;
     }
 
     public  boolean checkWin(){
-        return queens.size() == 8;
+        return gameStrategy.checkWin();
     }
 
     @Override
@@ -92,102 +99,114 @@ public class Game implements GameContract.EightQueensGame {
         initEmptyField();
     }
 
-    public void markField(int position, int[][] field, int toValue) {
-        int row = GameUtils.getRow(position);
-        int column = GameUtils.getColumn(position);
-        field[row][column] = toValue;
-        if(toValue >9) {
-            HashSet<Integer> values = new HashSet<>();
-            values.add(position);
-            queens.put(toValue,values);
+    public void setFigureOnCell(int position, Figure figure) {
+        Cell cell  = board.getCell(position);
+
+        if(cell.getCellStatus()!= CellStatus.FREE){
+            throw new UnsupportedOperationException("Cell is not free");
         }
+
+        cell.setFigure(figure);
+        board.updateCell(cell,position);
+        gameStrategy.updateData(figure, Action.ADD);
+
     }
 
-    public  void markRow(int queenPosition,int QueenId, int[][] field, int row) {
-        HashSet<Integer> qBlock = queens.get(QueenId);
-
-        if(qBlock == null) qBlock = new HashSet<>();
+    public  void markRow(Color color, int position, boolean isBlocking) {
+        int row = GameUtils.getRow(position);
 
         for (int column = 0; column < 8 ; column++) {
+            int currentPos =GameUtils.getPosition(row,column);
+            if(currentPos == position) continue;
 
-            if(column == queenPosition) field[row][column] = QueenId;
-            else  field[row][column] = BLOCKED;
-            qBlock.add(getPosition(row,column));
+            markFieldBlocked(currentPos,color,isBlocking);
         }
-        queens.put(QueenId, qBlock);
     }
 
-    public void markColumn(int queenPosition,int QueenId, int[][] field, int column) {
-        HashSet<Integer> qBlock = queens.get(QueenId);
-
-        if(qBlock == null) qBlock = new HashSet<>();
-
-        for (int row = 0; row < 8 ; row++) {
-
-            if(row == queenPosition) field[row][column] = QueenId;
-            else  field[row][column] = BLOCKED;
-            qBlock.add(getPosition(row,column));
+    private void markFieldBlocked(int currentPos, Color color, boolean isBlocking) {
+        Cell cell = board.getCell(currentPos);
+        int count;
+        if(isBlocking){
+            count = cell.increaseBlockingCount(color);
+        }else {
+            count = cell.decreaseBlockingCount(color);
         }
-        queens.put(QueenId, qBlock);
+
+        cell.setCellStatus(getCellStatus(color, isBlocking, count));
+        board.updateCell(cell,currentPos);
     }
 
+    private CellStatus getCellStatus(Color color, boolean isBlocking, int count) {
+        if(!isBlocking && count == 0) return CellStatus.FREE;
 
-    public  void markDownRight(int QueenId, int[][] field, int column, int row) {
-        HashSet<Integer> qBlock = queens.get(QueenId);
+        switch (color){
+            case WHITE:
+                return CellStatus.BLOCKED_BY_WHITES;
+            default:
+                return CellStatus.BLOCKED_BY_BLACKS;
+        }
+    }
 
-        if(qBlock == null) qBlock = new HashSet<>();
+    public  void markColumn(Color color, int position, boolean isBlocking) {
+        int col = GameUtils.getColumn(position);
+
+        for (int r = 0; r < 8 ; r++) {
+            int currentPos =GameUtils.getPosition(r,col);
+            if(currentPos == position) continue;
+
+            markFieldBlocked(currentPos,color, isBlocking);
+        }
+    }
+
+    public  void markDownRight(Color color, int position, boolean isBlocking) {
+        int row = GameUtils.getRow(position);
+        int column = GameUtils.getColumn(position);
 
         for(int r = row + 1,c = column + 1 ; r < 8 && c < 8 ; r++,c++){
-            field[r][c] = BLOCKED;
-            qBlock.add(getPosition(r,c));
+            int currentPos =GameUtils.getPosition(r,c);
+            if(currentPos == position) continue;
+
+            markFieldBlocked(currentPos,color, isBlocking);
         }
-        queens.put(QueenId, qBlock);
     }
 
-    public  void markUpRight(int QueenId, int[][] field, int column, int row) {
-        HashSet<Integer> qBlock = queens.get(QueenId);
-
-        if(qBlock == null) qBlock = new HashSet<>();
+    public  void markUpRight(Color color, int position, boolean isBlocking) {
+        int row = GameUtils.getRow(position);
+        int column = GameUtils.getColumn(position);
 
         for(int r = row - 1,c = column + 1 ; r >= 0 && c < 8 ; r--,c++) {
-            field[r][c] = BLOCKED;
-            qBlock.add(getPosition(r,c));
+            int currentPos =GameUtils.getPosition(r,c);
+            if(currentPos == position) continue;
+
+            markFieldBlocked(currentPos,color, isBlocking);
         }
-        queens.put(QueenId, qBlock);
     }
 
-    public  void markUpLeft(int QueenId, int[][] field, int column, int row) {
-        HashSet<Integer> qBlock = queens.get(QueenId);
-
-        if(qBlock == null) qBlock = new HashSet<>();
+    public  void markUpLeft(Color color, int position, boolean isBlocking) {
+        int row = GameUtils.getRow(position);
+        int column = GameUtils.getColumn(position);
 
         for(int r = row - 1,c = column - 1 ; r >= 0 && c >= 0 ; r--,c--)  {
-            field[r][c] = BLOCKED;
-            qBlock.add(getPosition(r,c));
+            int currentPos =GameUtils.getPosition(r,c);
+            if(currentPos == position) continue;
+
+            markFieldBlocked(currentPos,color, isBlocking);
         }
-        queens.put(QueenId, qBlock);
     }
 
-    public void markDownLeft(int QueenId, int[][] field, int column, int row) {
-        HashSet<Integer> qBlock = queens.get(QueenId);
-
-        if (qBlock == null) qBlock = new HashSet<>();
+    public void markDownLeft(Color color, int position, boolean isBlocking) {
+        int row = GameUtils.getRow(position);
+        int column = GameUtils.getColumn(position);
 
         for (int r = row + 1, c = column - 1; r < 8 && c >= 0; r++, c--) {
-            {
-                field[r][c] = BLOCKED;
-                qBlock.add(getPosition(r, c));
-            }
-            queens.put(QueenId, qBlock);
+            int currentPos =GameUtils.getPosition(r,c);
+            if(currentPos == position) continue;
+
+            markFieldBlocked(currentPos,color, isBlocking);
         }
-
-    }
-
-    private  Integer getPosition(int row, int column) {
-        return row*8 + column;
     }
 
     public int getQueenCount() {
-        return queens.size();
+        return ((ArrayList<Figure>)gameStrategy.getFigures()).size();
     }
 }
