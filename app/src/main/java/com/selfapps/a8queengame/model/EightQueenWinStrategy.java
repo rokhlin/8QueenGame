@@ -23,7 +23,7 @@ public class EightQueenWinStrategy implements WinStrategy {
             if(figure.getType() == figureType)
                 figures.add(figure);
         } else {
-            if(figures.size() > 1)
+            if(figures.size() > 0)
                 figures.remove(figures.size() - 1);
         }
 

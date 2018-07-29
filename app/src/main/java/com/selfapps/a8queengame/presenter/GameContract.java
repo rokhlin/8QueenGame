@@ -22,6 +22,7 @@ public interface GameContract {
         void updateLog(int textId);
         void updateQueenCount(int count);
         void showBackButton();
+        void blockBoard();
         GridView initBoardContainer(int columnWidth);
         DisplayMetrics getDisplayMetrics();
         String getStringFromId(int id);

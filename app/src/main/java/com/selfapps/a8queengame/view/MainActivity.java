@@ -28,6 +28,7 @@ import com.selfapps.a8queengame.R;
 public class MainActivity extends AppCompatActivity implements GameContract.GameView {
     private CustomListAdapter adapter;
     private TextView queensCount,gameLog;
+    private GridView gridview;
     private LinearLayout stat, returnLayout;
     private Game game;
     private Chronometer chronometer;
@@ -130,8 +131,15 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
     }
 
     @Override
+    public void blockBoard() {
+        if(gridview != null){
+            gridview.setEnabled(false);
+        }
+    }
+
+    @Override
     public GridView initBoardContainer(int columnWidth) {
-        GridView gridview = findViewById(R.id.boardLayout);
+        gridview = findViewById(R.id.boardLayout);
         gridview.setColumnWidth(columnWidth);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

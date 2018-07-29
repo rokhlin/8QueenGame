@@ -20,6 +20,7 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
     private static final int NUM_OF_QUEENS = 8;
     public static boolean needHelp = false;
     private boolean isStarted = false;
+    private boolean isFinished = false;
     private long elapsedMillis;
 
     private GameContract.GameView view;
@@ -39,6 +40,10 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
 
     @Override
     public void turn(int position) {
+        if(isFinished) {
+            view.showToast(R.string.game_inished);
+            return;
+        }
         if(!isStarted){
             view.startTimer();
             isStarted = true;
@@ -57,6 +62,8 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
         }
         else {
             if(addFigure(FigureType.QUEEN,position)){
+                isFinished = true;
+                view.blockBoard();
                 view.stopTimer();
                 view.updateLog(R.string.you_win);
                 view.showBackButton();
@@ -66,7 +73,8 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
         view.notifyAdapter(getData());
         view.updateQueenCount(getQueenCount());
 
-        if(game.checkGameOver()){
+        if(!isFinished && game.checkGameOver()){
+            isFinished = true;
             view.stopTimer();
             view.updateLog(R.string.game_over);
             view.showBackButton();

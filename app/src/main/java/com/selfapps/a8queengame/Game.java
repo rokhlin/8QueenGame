@@ -44,7 +44,7 @@ public class Game implements GameContract.EightQueensGame {
 
     @Override
     public void removeFigure(int position) {
-        boolean isBlocking = true;
+        boolean isBlocking = false;
         markRow(Color.BLACK, position, isBlocking);
         markColumn(Color.BLACK,position, isBlocking);
         markDownLeft(Color.BLACK,position, isBlocking);
