@@ -15,4 +15,10 @@
     <string name="help">Help</string>
     <string name="hide_help">Hide help</string>
     <string name="find_for_8_queens_secured_place">Find for 8 queens secured place</string>
+    <string name="queen_left_simple">left.</string>
+    <string name="queen_left_multiple">left.</string>
+    <string name="congrats">Congratulations!</string>
+    <string name="back">Back to menu</string>
+    <string name="queen_single">Queen</string>
+    <string name="queen_multiple">Queens</string>
 </resources>

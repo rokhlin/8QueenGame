@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,8 +28,10 @@ import com.selfapps.a8queengame.R;
 
 public class MainActivity extends AppCompatActivity implements GameContract.GameView {
     private CustomListAdapter adapter;
-    private TextView queensCount,gameLog;
+    private TextView queensCount,gameLog, finish_message;
+    private ImageView finish_pic;
     private GridView gridview;
+    private Button btnReturn;
     private LinearLayout stat, returnLayout;
     private Game game;
     private Chronometer chronometer;
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnReturn = findViewById(R.id.btn_back);
+        btnReturn = findViewById(R.id.btn_back);
         btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
             }
         });
 
+        finish_message = findViewById(R.id.tv_finish_message);
+        finish_pic = findViewById(R.id.iv_finish_picture);
         queensCount = findViewById(R.id.tv_free_queens);
         gameLog = findViewById(R.id.tv_log);
         stat = findViewById(R.id.ll_stat);
@@ -125,9 +130,16 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
         queensCount.setText( count +" "+ getString(R.string.queens_to_place));
     }
 
-    public void showBackButton() {
+    @Override
+    public void showBackButton(String btnText, int imgRes, String message) {
         stat.setVisibility(View.GONE);
         returnLayout.setVisibility(View.VISIBLE);
+        btnReturn.setText(btnText);
+        gameLog.setVisibility(View.GONE);
+        finish_message.setVisibility(View.VISIBLE);
+        finish_pic.setVisibility(View.VISIBLE);
+        finish_pic.setImageResource(imgRes);
+        finish_message.setText(message);
     }
 
     @Override

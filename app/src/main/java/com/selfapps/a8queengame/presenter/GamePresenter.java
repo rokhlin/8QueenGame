@@ -51,7 +51,7 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
 
         if(game.checkWin()) view.showToast(R.string.game_inished);
 
-        //int value = GameUtils.getValue(position, getData());//TODO move it from here
+
         Cell cell = game.getData().get(position);//TODO move it from here
 
         if(cell.getCellStatus().equals(CellStatus.BLOCKED_BY_BLACKS)) {
@@ -62,23 +62,37 @@ public class GamePresenter implements GameContract.Presenter<GameContract.GameVi
         }
         else {
             if(addFigure(FigureType.QUEEN,position)){
-                isFinished = true;
-                view.blockBoard();
-                view.stopTimer();
-                view.updateLog(R.string.you_win);
-                view.showBackButton();
+                showWin();
             }
-
         }
         view.notifyAdapter(getData());
         view.updateQueenCount(getQueenCount());
 
         if(!isFinished && game.checkGameOver()){
-            isFinished = true;
-            view.stopTimer();
-            view.updateLog(R.string.game_over);
-            view.showBackButton();
+            showGameOver();
         }
+    }
+
+    private void showWin() {
+        isFinished = true;
+        view.blockBoard();
+        view.stopTimer();
+        view.updateLog(R.string.you_win);
+        view.showBackButton(view.getStringFromId(R.string.back),
+                R.mipmap.winner,
+                view.getStringFromId(R.string.congrats));
+    }
+
+    private void showGameOver() {
+        String message = getQueenCount() +" "+
+                view.getStringFromId(getQueenCount() <= 1? R.string.queen_single : R.string.queen_multiple)
+                +" "+
+                view.getStringFromId(getQueenCount() <= 1? R.string.queen_left_simple : R.string.queen_left_multiple);
+        isFinished = true;
+        view.stopTimer();
+        view.updateLog(R.string.game_over);
+        view.showBackButton(view.getStringFromId(R.string.return1),
+                R.mipmap.game_over, message);
     }
 
     @Override

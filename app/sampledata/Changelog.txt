@@ -6,3 +6,21 @@ add Crashlytics
 implement MVP
 convert model to OOP type
 
+1.0
+block the board after finish event
+add Win! message
+add Game over the last achievement
+add difficulty settings
+
+1.1
+add game with different pieces
+add simple game and company
+add Ads
+
+1.2
+add chess tasks
+
+1.3
+add 2nd player
+add 2nd player as AI
+
