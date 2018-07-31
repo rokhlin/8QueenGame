@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/chess_logo_empty1"
+    android:orientation="vertical"
+    tools:context=".view.DifficultySettingsActivity">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/double_margin"
+        android:layout_marginTop="@dimen/double_margin"
+        android:layout_marginStart="@dimen/base_margin"
+        android:layout_marginEnd="@dimen/base_margin"
+        android:textColor="@color/colorWhite"
+        android:text="@string/select_difficulty" />
+
+    <Button
+        android:id="@+id/btn_easy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margin"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/buttonshape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="@string/easy"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
+        />
+
+    <Button
+        android:id="@+id/btn_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margin"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/buttonshape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="@string/normal"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
+         />
+
+    <Button
+        android:id="@+id/btn_hard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margin"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/buttonshape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="@string/hard"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
+         />
+
+    <Button
+        android:id="@+id/btn_profi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margin"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/buttonshape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="@string/profi"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
+         />
+</LinearLayout>

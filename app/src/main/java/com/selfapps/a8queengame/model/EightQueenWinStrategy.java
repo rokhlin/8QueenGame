@@ -6,6 +6,11 @@ public class EightQueenWinStrategy implements WinStrategy {
     ArrayList<Figure> figures = new ArrayList<>();
     FigureType figureType = FigureType.QUEEN;
     int winCount = 8;
+    Difficulty difficulty;
+
+    public EightQueenWinStrategy(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
 
     @Override
     public void init() {
@@ -48,5 +53,10 @@ public class EightQueenWinStrategy implements WinStrategy {
     @Override
     public Iterable<Figure> getFigures() {
         return figures;
+    }
+
+
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 }

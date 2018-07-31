@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.selfapps.a8queengame.Constants;
 import com.selfapps.a8queengame.CustomListAdapter;
 import com.selfapps.a8queengame.Game;
 import com.selfapps.a8queengame.model.Cell;
@@ -28,12 +29,12 @@ import com.selfapps.a8queengame.R;
 
 public class MainActivity extends AppCompatActivity implements GameContract.GameView {
     private CustomListAdapter adapter;
-    private TextView queensCount,gameLog, finish_message;
+    private TextView queensCount,gameLog, finish_message, timerInfo, helpInfo, removeInfo;
+    private LinearLayout gameStatContainer;
     private ImageView finish_pic;
     private GridView gridview;
-    private Button btnReturn;
+    private Button btnReturn, btnShowLog;
     private LinearLayout stat, returnLayout;
-    private Game game;
     private Chronometer chronometer;
     private GamePresenter presenter;
 
@@ -41,6 +42,19 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = getIntent();
+        int difficulty = intent.getIntExtra(Constants.EXTRA_DIFFICULTY_LEVEL,1);
+
+        gameStatContainer = findViewById(R.id.ll_game_stat);
+        finish_message = findViewById(R.id.tv_finish_message);
+        finish_pic = findViewById(R.id.iv_finish_picture);
+        queensCount = findViewById(R.id.tv_free_queens);
+        gameLog = findViewById(R.id.tv_log);
+        stat = findViewById(R.id.ll_stat);
+        returnLayout = findViewById(R.id.ll_return);
+        removeInfo = findViewById(R.id.tv_removes_info);
+        helpInfo = findViewById(R.id.tv_helps_info);
+        timerInfo = findViewById(R.id.tv_timer_info);
 
         btnReturn = findViewById(R.id.btn_back);
         btnReturn.setOnClickListener(new View.OnClickListener() {
@@ -52,14 +66,19 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
             }
         });
 
-        finish_message = findViewById(R.id.tv_finish_message);
-        finish_pic = findViewById(R.id.iv_finish_picture);
-        queensCount = findViewById(R.id.tv_free_queens);
-        gameLog = findViewById(R.id.tv_log);
-        stat = findViewById(R.id.ll_stat);
-        returnLayout = findViewById(R.id.ll_return);
+        btnShowLog = findViewById(R.id.bnt_show_log);
+        btnShowLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameStatContainer.setVisibility(View.GONE);
+                gameLog.setVisibility(View.VISIBLE);
 
-        presenter = new GamePresenter();
+            }
+        });
+
+
+
+        presenter = new GamePresenter(difficulty);
         presenter.attachView(this);
         presenter.viewIsReady();
 
@@ -77,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.game_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.menu_help);
+        if(menuItem != null) presenter.checkHelpStatus(menuItem);
         return true;
     }
 
@@ -123,6 +144,13 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
     @Override
     public void updateLog(int textId) {
         gameLog.setText(gameLog.getText()+"\n" + getString(textId));
+    }
+
+    @Override
+    public void updateGameStat(String timer, String help, String removes) {
+        timerInfo.setText(getString(R.string.game_duration) +" "+timer);
+        helpInfo.setText(getString(R.string.help_requests)+" "+help);
+        removeInfo.setText(getString(R.string.fig_removes)+" "+removes);
     }
 
     @Override

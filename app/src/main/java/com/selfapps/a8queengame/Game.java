@@ -7,20 +7,24 @@ import com.selfapps.a8queengame.model.Cell;
 import com.selfapps.a8queengame.model.CellStatus;
 import com.selfapps.a8queengame.model.ChessBoard;
 import com.selfapps.a8queengame.model.Color;
+import com.selfapps.a8queengame.model.Difficulty;
 import com.selfapps.a8queengame.model.EightQueenWinStrategy;
 import com.selfapps.a8queengame.model.Figure;
 import com.selfapps.a8queengame.model.FigureType;
+import com.selfapps.a8queengame.model.Player;
 import com.selfapps.a8queengame.presenter.GameContract;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class Game implements GameContract.EightQueensGame {
     private ChessBoard board;
     private EightQueenWinStrategy gameStrategy;
+    private int difficulty;
 
-    public Game() {
-        initEmptyField();
+
+    public Game(int difficulty) {
+        this.difficulty = difficulty;
+        initEmptyField(difficulty);
     }
     
 
@@ -63,9 +67,9 @@ public class Game implements GameContract.EightQueensGame {
     }
 
     @Override
-    public SparseArray<Cell> initEmptyField() {
+    public SparseArray<Cell> initEmptyField(int difficulty) {
         board = new ChessBoard(8);
-        gameStrategy = new EightQueenWinStrategy();
+        gameStrategy = new EightQueenWinStrategy(new Difficulty(difficulty));
         return board.getCells();
     }
 
@@ -86,6 +90,11 @@ public class Game implements GameContract.EightQueensGame {
     }
 
     @Override
+    public Difficulty getDifficulty() {
+        return gameStrategy.getDifficulty();
+    }
+
+    @Override
     public void startGame() {
     }
 
@@ -96,7 +105,7 @@ public class Game implements GameContract.EightQueensGame {
 
     @Override
     public void restartGame() {
-        initEmptyField();
+        initEmptyField(difficulty);
     }
 
     public void setFigureOnCell(int position, Figure figure) {
