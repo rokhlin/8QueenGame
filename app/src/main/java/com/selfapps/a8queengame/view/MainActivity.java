@@ -2,6 +2,7 @@ package com.selfapps.a8queengame.view;
 
 import android.content.Intent;
 import android.os.SystemClock;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -25,192 +26,105 @@ import com.selfapps.a8queengame.presenter.GameContract;
 import com.selfapps.a8queengame.presenter.GamePresenter;
 import com.selfapps.a8queengame.R;
 
+import static com.selfapps.a8queengame.view.GamePagerAdapter.getChessBoardFragment;
+
 public class MainActivity extends AppCompatActivity implements GameContract.GameView {
-    private CustomListAdapter adapter;
-    private TextView queensCount,gameLog, finish_message, timerInfo, helpInfo, removeInfo;
-    private LinearLayout gameStatContainer;
-    private ImageView finish_pic;
-    private GridView gridview;
-    private Button btnReturn, btnShowLog,btnHideLog ;
-    private LinearLayout statQueenContainer, returnContainer, gameFinishContainer;
-    private Chronometer chronometer;
-    private GamePresenter presenter;
+    private ViewPager mViewPager;
+    private GamePagerAdapter gamePagerAdapter;
+    public GamePresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        gamePagerAdapter = new GamePagerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(gamePagerAdapter);
+
+
         Intent intent = getIntent();
         int difficulty = intent.getIntExtra(Constants.EXTRA_DIFFICULTY_LEVEL,1);
-        initFields();
-
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,StartActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
-        btnShowLog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gameStatContainer.setVisibility(View.GONE);
-                gameLog.setVisibility(View.VISIBLE);
-                btnHideLog.setVisibility(View.VISIBLE);
-                btnShowLog.setVisibility(View.GONE);
-
-            }
-        });
-
-        btnHideLog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gameStatContainer.setVisibility(View.VISIBLE);
-                gameLog.setVisibility(View.GONE);
-                btnHideLog.setVisibility(View.GONE);
-                btnShowLog.setVisibility(View.VISIBLE);
-            }
-        });
 
         presenter = new GamePresenter(difficulty);
         presenter.attachView(this);
-        presenter.viewIsReady();
 
 
-        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                presenter.setElapsedTime(SystemClock.elapsedRealtime()
-                        - chronometer.getBase());
-            }
-        });
-    }
-
-    private void initFields() {
-        chronometer = findViewById(R.id.chronometer);
-        finish_pic = findViewById(R.id.iv_finish_picture);
-
-        //TextViews
-        finish_message = findViewById(R.id.tv_finish_message);
-        queensCount = findViewById(R.id.tv_free_queens);
-        removeInfo = findViewById(R.id.tv_removes_info);
-        helpInfo = findViewById(R.id.tv_helps_info);
-        timerInfo = findViewById(R.id.tv_timer_info);
-        gameLog = findViewById(R.id.tv_log);
-
-        //Layouts
-        statQueenContainer = findViewById(R.id.ll_stat);
-        returnContainer = findViewById(R.id.ll_return);
-        gameFinishContainer = findViewById(R.id.ll_game_finish);
-        gameStatContainer = findViewById(R.id.ll_game_stat);
-
-        //Buttons
-        btnReturn = findViewById(R.id.btn_back);
-        btnShowLog = findViewById(R.id.btn_show_log);
-        btnHideLog = findViewById(R.id.btn_hide_log);
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.game_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.menu_help);
-        if(menuItem != null) presenter.checkHelpStatus(menuItem);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_help){
-            presenter.menuSelected(item);
-            return true;
-        } else
-            return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.game_menu, menu);
+//        MenuItem menuItem = menu.findItem(R.id.menu_help);
+//        if(menuItem != null) presenter.checkHelpStatus(menuItem);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if(item.getItemId() == R.id.menu_help){
+//            presenter.menuSelected(item);
+//            return true;
+//        } else
+//            return super.onOptionsItemSelected(item);
+//    }
 
 
     @Override
     public void notifyAdapter(SparseArray<Cell> newData) {
-        adapter.notifyDataSetChanged(newData);
-
+        getChessBoardFragment().notifyAdapter(newData);
     }
 
     @Override
     public void startTimer() {
-        chronometer.setBase(SystemClock.elapsedRealtime());
-        chronometer.start();
+        getChessBoardFragment().startTimer();
     }
 
     @Override
     public void stopTimer() {
-        chronometer.stop();
+        getChessBoardFragment().stopTimer();
     }
 
 
     @Override
     public CustomListAdapter initAdapter(GridView gridView, SparseArray<Cell> cells, int edge) {
-        adapter = new CustomListAdapter(this, cells, edge);
-        gridView.setAdapter(adapter);
-        return adapter;
+        return getChessBoardFragment().initAdapter(gridView,cells,edge);
     }
 
     @Override
     public void updateLog(String s) {
-        gameLog.setText(gameLog.getText()+"\n"+s);
+        getChessBoardFragment().updateLog(s);
     }
 
     @Override
     public void updateLog(int textId) {
-        gameLog.setText(gameLog.getText()+"\n" + getString(textId));
+        getChessBoardFragment().updateLog(textId);
     }
 
     @Override
     public void updateGameStat(String timer, String help, String removes) {
-        timerInfo.setText(getString(R.string.game_duration) +" "+timer);
-        helpInfo.setText(getString(R.string.help_requests)+" "+help);
-        removeInfo.setText(getString(R.string.fig_removes)+" "+removes);
+        getChessBoardFragment().updateGameStat(timer,help,removes);
     }
 
     @Override
     public void updateQueenCount(int count){
-        queensCount.setText( count +" "+ getString(R.string.queens_to_place));
+        getChessBoardFragment().updateQueenCount(count);
     }
 
     @Override
     public void showBackButton(String btnText, int imgRes, String message) {
-        statQueenContainer.setVisibility(View.GONE);
-        returnContainer.setVisibility(View.VISIBLE);
-        btnReturn.setText(btnText);
-        gameLog.setVisibility(View.GONE);
-        btnHideLog.setVisibility(View.GONE);
-
-        gameFinishContainer.setVisibility(View.VISIBLE);
-        finish_pic.setImageResource(imgRes);
-        finish_message.setText(message);
+        getChessBoardFragment().showBackButton(btnText,imgRes,message);
     }
 
     @Override
     public void blockBoard() {
-        if(gridview != null){
-            gridview.setEnabled(false);
-        }
+        getChessBoardFragment().blockBoard();
     }
 
     @Override
     public GridView initBoardContainer(int columnWidth) {
-        gridview = findViewById(R.id.boardLayout);
-        gridview.setColumnWidth(columnWidth);
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                presenter.turn(position);
-            }
-        });
-        return gridview;
+        return getChessBoardFragment().initBoardContainer(columnWidth);
     }
 
     @Override
@@ -235,5 +149,11 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
     public void showToast(String text) {
         Toast.makeText(MainActivity.this, text,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    public void returnToStartActivity() {
+        Intent intent = new Intent(MainActivity.this,StartActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

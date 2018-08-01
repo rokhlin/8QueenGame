@@ -32,6 +32,25 @@ public interface GameContract {
         void showToast(String text);
     }
 
+    interface RulesView extends MvpView{
+
+    }
+
+    interface ChessBoardView extends MvpView{
+        void notifyAdapter(SparseArray<Cell> newData);
+        void startTimer();
+        void stopTimer();
+        CustomListAdapter initAdapter(GridView gridView, SparseArray<Cell> cells, int edge);
+        void updateLog(String s);
+        void updateLog(int textId);
+        void updateGameStat(String timer, String help, String removes);
+        void updateQueenCount(int count);
+        void showBackButton(String btnText, int imgRes, String message);
+        void blockBoard();
+        GridView initBoardContainer(int columnWidth);
+
+    }
+
     interface Presenter<V extends MvpView> extends MvpPresenter<V> {
         int getEdge(int height, int width);
         void turn(int position);
