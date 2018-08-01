@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Programming/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/hardware/ic_device_hub_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Programming/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_replay_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,8 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="5364d2" />
-                            <entry key="outputName" value="queen_img" />
+                            <entry key="color" value="656565" />
+                            <entry key="outputName" value="replay" />
                             <entry key="sourceFile" value="C:\Users\Anton" />
                           </map>
                         </option>

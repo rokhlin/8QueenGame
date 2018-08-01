@@ -33,5 +33,6 @@
     <string name="game_duration">Времени осталось:</string>
     <string name="help_requests">Кол-во подсказок:</string>
     <string name="fig_removes">Отмен действий:</string>
-
+    <string name="hide_log">Скрыть</string>
+    <string name="game_log">Ходы</string>
 </resources>

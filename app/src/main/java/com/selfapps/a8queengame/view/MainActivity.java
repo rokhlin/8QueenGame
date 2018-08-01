@@ -20,9 +20,7 @@ import android.widget.Toast;
 
 import com.selfapps.a8queengame.Constants;
 import com.selfapps.a8queengame.CustomListAdapter;
-import com.selfapps.a8queengame.Game;
 import com.selfapps.a8queengame.model.Cell;
-import com.selfapps.a8queengame.model.Figure;
 import com.selfapps.a8queengame.presenter.GameContract;
 import com.selfapps.a8queengame.presenter.GamePresenter;
 import com.selfapps.a8queengame.R;
@@ -33,8 +31,8 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
     private LinearLayout gameStatContainer;
     private ImageView finish_pic;
     private GridView gridview;
-    private Button btnReturn, btnShowLog;
-    private LinearLayout stat, returnLayout;
+    private Button btnReturn, btnShowLog,btnHideLog ;
+    private LinearLayout statQueenContainer, returnContainer, gameFinishContainer;
     private Chronometer chronometer;
     private GamePresenter presenter;
 
@@ -44,19 +42,8 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         int difficulty = intent.getIntExtra(Constants.EXTRA_DIFFICULTY_LEVEL,1);
+        initFields();
 
-        gameStatContainer = findViewById(R.id.ll_game_stat);
-        finish_message = findViewById(R.id.tv_finish_message);
-        finish_pic = findViewById(R.id.iv_finish_picture);
-        queensCount = findViewById(R.id.tv_free_queens);
-        gameLog = findViewById(R.id.tv_log);
-        stat = findViewById(R.id.ll_stat);
-        returnLayout = findViewById(R.id.ll_return);
-        removeInfo = findViewById(R.id.tv_removes_info);
-        helpInfo = findViewById(R.id.tv_helps_info);
-        timerInfo = findViewById(R.id.tv_timer_info);
-
-        btnReturn = findViewById(R.id.btn_back);
         btnReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,23 +53,33 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
             }
         });
 
-        btnShowLog = findViewById(R.id.bnt_show_log);
+
         btnShowLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gameStatContainer.setVisibility(View.GONE);
                 gameLog.setVisibility(View.VISIBLE);
+                btnHideLog.setVisibility(View.VISIBLE);
+                btnShowLog.setVisibility(View.GONE);
 
             }
         });
 
-
+        btnHideLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameStatContainer.setVisibility(View.VISIBLE);
+                gameLog.setVisibility(View.GONE);
+                btnHideLog.setVisibility(View.GONE);
+                btnShowLog.setVisibility(View.VISIBLE);
+            }
+        });
 
         presenter = new GamePresenter(difficulty);
         presenter.attachView(this);
         presenter.viewIsReady();
 
-        chronometer = findViewById(R.id.chronometer);
+
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
@@ -90,6 +87,30 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
                         - chronometer.getBase());
             }
         });
+    }
+
+    private void initFields() {
+        chronometer = findViewById(R.id.chronometer);
+        finish_pic = findViewById(R.id.iv_finish_picture);
+
+        //TextViews
+        finish_message = findViewById(R.id.tv_finish_message);
+        queensCount = findViewById(R.id.tv_free_queens);
+        removeInfo = findViewById(R.id.tv_removes_info);
+        helpInfo = findViewById(R.id.tv_helps_info);
+        timerInfo = findViewById(R.id.tv_timer_info);
+        gameLog = findViewById(R.id.tv_log);
+
+        //Layouts
+        statQueenContainer = findViewById(R.id.ll_stat);
+        returnContainer = findViewById(R.id.ll_return);
+        gameFinishContainer = findViewById(R.id.ll_game_finish);
+        gameStatContainer = findViewById(R.id.ll_game_stat);
+
+        //Buttons
+        btnReturn = findViewById(R.id.btn_back);
+        btnShowLog = findViewById(R.id.btn_show_log);
+        btnHideLog = findViewById(R.id.btn_hide_log);
     }
 
 
@@ -160,12 +181,13 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
 
     @Override
     public void showBackButton(String btnText, int imgRes, String message) {
-        stat.setVisibility(View.GONE);
-        returnLayout.setVisibility(View.VISIBLE);
+        statQueenContainer.setVisibility(View.GONE);
+        returnContainer.setVisibility(View.VISIBLE);
         btnReturn.setText(btnText);
         gameLog.setVisibility(View.GONE);
-        finish_message.setVisibility(View.VISIBLE);
-        finish_pic.setVisibility(View.VISIBLE);
+        btnHideLog.setVisibility(View.GONE);
+
+        gameFinishContainer.setVisibility(View.VISIBLE);
         finish_pic.setImageResource(imgRes);
         finish_message.setText(message);
     }

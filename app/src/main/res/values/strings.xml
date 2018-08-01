@@ -32,5 +32,6 @@
     <string name="game_duration">Game duration:</string>
     <string name="help_requests">Help requests:</string>
     <string name="fig_removes">Figure removes:</string>
-    <string name="game_log">Game Log</string>
+    <string name="game_log">Log</string>
+    <string name="hide_log">Hide</string>
 </resources>
