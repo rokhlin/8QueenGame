@@ -156,4 +156,8 @@ public class MainActivity extends AppCompatActivity implements GameContract.Game
         startActivity(intent);
         finish();
     }
+
+    public void setCurrentItem(int item){
+        mViewPager.setCurrentItem(item);
+    }
 }

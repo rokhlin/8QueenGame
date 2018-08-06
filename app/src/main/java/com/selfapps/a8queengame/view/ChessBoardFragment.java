@@ -109,6 +109,18 @@ public class ChessBoardFragment extends Fragment implements GameContract.ChessBo
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        instance = null;
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private void initFields(View view) {
         gridview = view.findViewById(R.id.boardLayout);
         chronometer = view.findViewById(R.id.chronometer);
