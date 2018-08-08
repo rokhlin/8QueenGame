@@ -1,13 +1,9 @@
 package com.selfapps.a8queengame.view;
 
 
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,16 +72,5 @@ public class RulesFragment extends Fragment {
         return (MainActivity) getActivity();
     }
 
-    private Locale getLocale(){
-        return getResources().getConfiguration().locale;
-//        Locale locale;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            locale = Resources.getSystem().getConfiguration().getLocales().get(0);
-//        } else {
-//            //noinspection deprecation
-//            locale = Resources.getSystem().getConfiguration().locale;
-//        }
-//        return locale;
-    }
 
 }
